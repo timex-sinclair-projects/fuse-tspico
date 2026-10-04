@@ -456,7 +456,7 @@ jobs:
         if: ${{ inputs.tspico_test }}
         run: |
           $env:PATH = "$env:GITHUB_WORKSPACE\${{ steps.copy-dlls.outputs.FUSE_DISTR_DIR }};$env:PATH"
-          python tspico/bridge_test.py .\fuse.exe
+          py -3 tspico/bridge_test.py .\fuse.exe
         shell: pwsh
 
       - name: (9) Run tests
