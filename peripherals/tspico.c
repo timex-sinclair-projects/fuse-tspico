@@ -119,7 +119,7 @@ static int
 tspico_send( const unsigned char *buf, int len )
 {
   while( len > 0 ) {
-    int n = send( tspico_socket, (const char *)buf, len, 0 );
+    int n = (int)send( tspico_socket, (const char *)buf, len, 0 );
     if( n <= 0 ) return 0;
     buf += n; len -= n;
   }
