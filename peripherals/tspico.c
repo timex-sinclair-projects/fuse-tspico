@@ -229,8 +229,9 @@ tspico_connect( void )
     return;
   }
 
-  ui_error( UI_ERROR_INFO, "TS-Pico: bridge connected on %s (version %d)",
-            where, version );
+  /* Connected: nothing to say. (Every ui_error() is a dialog on some UIs,
+     the Win32 one a modal one.) The bridge's version is for later ones. */
+  (void)version;
 }
 
 /* One frame; the bridge's reply, or what an absent TS-Pico reads as */
