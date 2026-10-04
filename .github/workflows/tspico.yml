@@ -4,8 +4,9 @@ run-name: TS-Pico builds / ${{ github.actor }} /
 # The TS-Pico branch on Linux, macOS and Windows: a headless build with
 # automation, its unit tests, and tspico/bridge_test.py (the TS-Pico
 # interface against a stand-in bridge). Upstream's own workflows still run
-# on pull requests. libspectrum is pinned to its 1.7.0 release (the one Fuse
-# 1.10 needs): master's test 273 doesn't complete on 32-bit Windows.
+# on pull requests. libspectrum is master, as Fuse's master needs; on Windows
+# its own test suite is skipped, as master's test 273 (MMC high-bit sector
+# arguments) doesn't complete on 32-bit Windows.
 on:
   push:
     branches: [tspico-device]
@@ -19,7 +20,7 @@ jobs:
     uses: ./.github/workflows/build_libspectrum_linux_sub.yml
     with:
       key: fuse-app
-      libspectrum_ref: libspectrum-1.7.0
+      libspectrum_ref: master
       use_fake_glib: true
 
   libspectrum-macos:
@@ -27,14 +28,15 @@ jobs:
     uses: ./.github/workflows/build_libspectrum_macos_sub.yml
     with:
       key: fuse-app
-      libspectrum_ref: libspectrum-1.7.0
+      libspectrum_ref: master
 
   libspectrum-windows:
     name: "Libspectrum lib (Windows)"
     uses: ./.github/workflows/build_libspectrum_windows_sub.yml
     with:
       key: fuse-app
-      libspectrum_ref: libspectrum-1.7.0
+      libspectrum_ref: master
+      run_tests: false
 
   linux:
     name: "TS-Pico, NULL UI (Linux)"

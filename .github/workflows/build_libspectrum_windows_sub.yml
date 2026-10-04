@@ -27,6 +27,11 @@ on:
         type: boolean
         required: false
         default: true
+      run_tests:
+        # libspectrum's own tests (make check)
+        type: boolean
+        required: false
+        default: true
 
 jobs:
   build:
@@ -199,6 +204,7 @@ jobs:
 
       - name: (12) Run tests
         id: run-tests
+        if: ${{ inputs.run_tests }}
         run: |
           cd ${GITHUB_WORKSPACE}/${LIBSPECTRUM_DIR}
 
