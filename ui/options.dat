@@ -110,6 +110,9 @@ Checkbox, Spe(c)tranet disable, spectranet_disable, INPUT_KEY_c
 #ifdef BUILD_TTX2000S
 Checkbox, TT(X)2000S, ttx2000s, INPUT_KEY_x
 #endif
+#ifdef BUILD_TSPICO
+Checkbox, TS-Pic(o) interface, tspico, INPUT_KEY_o
+#endif
 Checkbox, uSo(u)rce, usource, INPUT_KEY_u
 Postcheck, periph_postcheck
 Posthook, periph_posthook

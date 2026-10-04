@@ -850,6 +850,15 @@ else
 fi
 AM_CONDITIONAL(BUILD_TTX2000S, test "$build_ttx2000s" = yes)
 
+dnl The TS-Pico interface talks to its bridge over a socket
+if test "$sockets" = yes; then
+  build_tspico=yes
+  AC_DEFINE([BUILD_TSPICO], 1, [Defined if we support the TS-Pico interface])
+else
+  build_tspico=no
+fi
+AM_CONDITIONAL(BUILD_TSPICO, test "$build_tspico" = yes)
+
 dnl See if POSIX threads are supported
 AC_MSG_CHECKING([whether pthread support requested])
 AC_ARG_WITH(pthread,
@@ -1070,6 +1079,7 @@ echo "libpng support: ${libpng}"
 echo "Available audio drivers: ${audio_driver_list}"
 echo "Selected audio driver: ${audio_driver}"
 echo "Spectranet support: ${build_spectranet}"
+echo "TS-Pico support: ${build_tspico}"
 echo "SpeccyBoot support: ${linux_tap:-no}"
 echo "TTX2000 S support: ${build_ttx2000s}"
 echo "Desktop integration: ${desktopintegration}"

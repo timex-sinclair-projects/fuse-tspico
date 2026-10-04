@@ -2026,6 +2026,35 @@ to disable). Same as the Media Options dialog's
 option.
 .RE
 .PP
+.B \-\-tspico
+.RS
+Emulate a TS-Pico interface on the TS2068: ports 0x0e and 0x0f, decoded on
+the low byte, go to a TS-Pico bridge (see
+.BR \-\-tspico\-bridge ),
+which runs the real TS-Pico firmware with its SD card in a folder. The
+TS-Pico ROM is 32K: give its first 16K as
+.B \-\-rom\-ts2068\-0
+and its second 16K as
+.BR \-\-rom\-ts2068\-1 .
+Same as the General Peripherals Options dialog's
+.I "TS-Pico interface"
+option. The bridge is pico_host, from
+<https://github.com/timex-sinclair-projects/tspico-firmware-build>.
+.RE
+.PP
+.B \-\-tspico\-bridge
+.I address
+.RS
+Where the TS-Pico bridge listens:
+.BI tcp: host : port
+or (not on Windows)
+.BI unix: path .
+If unset, the
+.B TSPICO_BRIDGE
+environment variable, and failing that tcp:127.0.0.1:2068. With no
+bridge there, the TS2068 runs as if no TS-Pico were plugged in.
+.RE
+.PP
 .B \-\-ttx2000s
 .RS
 Emulate a TTX2000S teletext adaptor. Same as the General Peripherals Options

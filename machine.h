@@ -112,6 +112,9 @@ void machine_clear_snapshot_rom_bank( memory_page *bank_map, int page_num );
 void machine_clear_snapshot_rom_banks( void );
 int machine_load_rom( int page_num, const char *filename, const char *fallback,
   size_t expected_length, libspectrum_snap *snap );
+int machine_load_rom_with_sizes( int page_num, const char *filename,
+  const char *fallback, const size_t *allowed_lengths,
+  size_t allowed_length_count, size_t *loaded_length, libspectrum_snap *snap );
 
 int machine_reset( int hard_reset );
 int machine_reset_from_snapshot( int hard_reset, libspectrum_snap *snap );

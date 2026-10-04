@@ -500,6 +500,17 @@ machine_load_rom( int page_num, const char *filename, const char *fallback,
 }
 
 int
+machine_load_rom_with_sizes( int page_num, const char *filename,
+  const char *fallback, const size_t *allowed_lengths,
+  size_t allowed_length_count, size_t *loaded_length, libspectrum_snap *snap )
+{
+  const rom_size_spec sizes = { allowed_lengths, allowed_length_count };
+  return machine_load_rom_bank_internal( memory_map_rom, page_num, filename,
+                                         fallback, &sizes, loaded_length,
+                                         snap );
+}
+
+int
 machine_reset( int hard_reset )
 {
   return machine_reset_from_snapshot( hard_reset, NULL );

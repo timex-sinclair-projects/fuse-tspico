@@ -28,6 +28,7 @@
 
 #include "libspectrum.h"
 
+#include "compat.h"
 #include "machine.h"
 #include "machines.h"
 #include "machines_periph.h"
@@ -67,14 +68,21 @@ ts2068_init( fuse_machine_info *machine )
 static int
 ts2068_reset( int hard_reset, libspectrum_snap *snap )
 {
-  size_t i, j;
+  /* The EXROM is 8K, or 16K as on the TS-Pico interface: then the 8K chunks
+     at even addresses (0x0000, 0x4000, ...) see its first half and the odd
+     ones (0x2000, 0x6000, ...) its second, as A13 selects. */
+  static const size_t exrom_lengths[] = { 0x2000, 0x4000 };
+  size_t i, j, exrom_length;
   int error;
 
   error = machine_load_rom( 0, settings_current.rom_ts2068_0,
                             settings_default.rom_ts2068_0, 0x4000, snap );
   if( error ) return error;
-  error = machine_load_rom( 1, settings_current.rom_ts2068_1,
-                            settings_default.rom_ts2068_1, 0x2000, snap );
+  error = machine_load_rom_with_sizes( 1, settings_current.rom_ts2068_1,
+                                       settings_default.rom_ts2068_1,
+                                       exrom_lengths,
+                                       ARRAY_SIZE( exrom_lengths ),
+                                       &exrom_length, snap );
   if( error ) return error;
 
   /* 0x0000: ROM 0 */
@@ -95,6 +103,9 @@ ts2068_reset( int hard_reset, libspectrum_snap *snap )
   /* TS2068 has its own joysticks */
   periph_set_present( PERIPH_TYPE_KEMPSTON, PERIPH_PRESENT_NEVER );
 
+  /* The TS-Pico interface, on ports 0x0e and 0x0f */
+  periph_set_present( PERIPH_TYPE_TSPICO, PERIPH_PRESENT_OPTIONAL );
+
   periph_update();
 
   for( i = 0; i < 8; i++ )
@@ -106,7 +117,9 @@ ts2068_reset( int hard_reset, libspectrum_snap *snap )
       dock_page->page_num = i;
 
       exrom_page = &timex_exrom[i * MEMORY_PAGES_IN_8K + j];
-      *exrom_page = memory_map_rom[MEMORY_PAGES_IN_16K + j];
+      *exrom_page = memory_map_rom[MEMORY_PAGES_IN_16K +
+                     ( exrom_length == 0x4000 && ( i & 1 ) ?
+                       MEMORY_PAGES_IN_8K : 0 ) + j];
       exrom_page->source = memory_source_exrom;
       exrom_page->page_num = i;
     }

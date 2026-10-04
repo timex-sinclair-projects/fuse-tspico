@@ -33,6 +33,7 @@ fuse_SOURCES += \
                 peripherals/spectranet.c \
                 peripherals/ula.c \
                 peripherals/usource.c \
+                peripherals/tspico.c \
                 peripherals/ttx2000s.c \
                 peripherals/sound/ay.c \
                 peripherals/sound/covox.c \
@@ -85,6 +86,7 @@ noinst_HEADERS += \
                   peripherals/spectranet.h \
                   peripherals/ula.h \
                   peripherals/usource.h \
+                  peripherals/tspico.h \
                   peripherals/ttx2000s.h \
                   peripherals/sound/ay.h \
                   peripherals/sound/covox.h \
