@@ -31,6 +31,12 @@ on:
         type: boolean
         required: false
         default: false
+      tspico_test:
+        # Run tspico/bridge_test.py (the TS-Pico interface against a stand-in
+        # bridge); needs a build configured with --enable-automation
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   build:
@@ -100,6 +106,7 @@ jobs:
           .github/scripts/in_config.sh "Spectranet support: yes"
           .github/scripts/in_config.sh "SpeccyBoot support: no"
           .github/scripts/in_config.sh "TTX2000 S support: yes"
+          .github/scripts/in_config.sh "TS-Pico support: yes"
           .github/scripts/in_config.sh "Desktop integration: no"
           
           .github/scripts/in_config.sh "User interface: ${{ inputs.verify_ui }}"
@@ -114,6 +121,10 @@ jobs:
 
       - name: (10) Install
         run: sudo make install
+
+      - name: (10b) TS-Pico bridge test
+        if: ${{ inputs.tspico_test }}
+        run: python3 tspico/bridge_test.py ./fuse
 
       - name: (11) Run unit tests
         if: ${{ inputs.run_check }}

@@ -1,0 +1,73 @@
+name: TS-Pico
+run-name: TS-Pico builds / ${{ github.actor }} /
+
+# The TS-Pico branch on Linux, macOS and Windows: a headless build with
+# automation, its unit tests, and tspico/bridge_test.py (the TS-Pico
+# interface against a stand-in bridge). Upstream's own workflows still run
+# on pull requests.
+on:
+  push:
+    branches: [tspico-device]
+  pull_request:
+    branches: [tspico-device]
+  workflow_dispatch:
+
+jobs:
+  libspectrum-linux:
+    name: "Libspectrum lib (Linux)"
+    uses: ./.github/workflows/build_libspectrum_linux_sub.yml
+    with:
+      key: fuse-app
+      libspectrum_ref: master
+      use_fake_glib: true
+
+  libspectrum-macos:
+    name: "Libspectrum lib (MacOS)"
+    uses: ./.github/workflows/build_libspectrum_macos_sub.yml
+    with:
+      key: fuse-app
+      libspectrum_ref: master
+
+  libspectrum-windows:
+    name: "Libspectrum lib (Windows)"
+    uses: ./.github/workflows/build_libspectrum_windows_sub.yml
+    with:
+      key: fuse-app
+      libspectrum_ref: master
+
+  linux:
+    name: "TS-Pico, NULL UI (Linux)"
+    needs: [libspectrum-linux]
+    uses: ./.github/workflows/build_linux_sub.yml
+    with:
+      name: "NULL UI"
+      dependencies: "libaudiofile-dev libgcrypt-dev libpng-dev"
+      configure_params: "--with-null-ui --enable-automation"
+      verify_ui: "null"
+      run_check: true
+      tspico_test: true
+
+  macos:
+    name: "TS-Pico, NULL UI (MacOS)"
+    needs: [libspectrum-macos]
+    uses: ./.github/workflows/build_macos_sub.yml
+    with:
+      name: "NULL UI"
+      dependencies: ""
+      configure_params: "--with-null-ui --with-audio-driver=null --enable-automation"
+      verify_ui: "null"
+      verify_audio: "null"
+      run_check: true
+      tspico_test: true
+
+  windows:
+    name: "TS-Pico, Win32 UI (Windows)"
+    needs: [libspectrum-windows]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      key: "tspico-win32"
+      dependencies: ""
+      configure_params: "--with-win32 --with-audio-driver=null --enable-automation"
+      verify_ui: "win32"
+      verify_audio: "null"
+      tspico_test: true
