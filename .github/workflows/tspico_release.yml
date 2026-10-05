@@ -1,0 +1,74 @@
+name: TS-Pico release
+run-name: TS-Pico Windows release / ${{ github.actor }} /
+
+# Fuse for Windows with the TS-Pico, as a download: the Win32 build as a zip
+# and an installer, checked with tspico/bridge_test.py first. A tag
+# tspico-v* makes a GitHub release with them; a manual run leaves them as
+# workflow artefacts.
+on:
+  push:
+    tags: ['tspico-v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  libspectrum:
+    name: "Libspectrum (Windows)"
+    uses: ./.github/workflows/build_libspectrum_windows_sub.yml
+    with:
+      key: fuse-app
+      libspectrum_ref: master
+      run_tests: false            # its test 273 doesn't complete on 32-bit Windows
+
+  win32:
+    name: "Fuse Win32 build"
+    needs: [libspectrum]
+    uses: ./.github/workflows/build_windows_sub.yml
+    with:
+      key: "tspico-release-win32"
+      dependencies: "mingw64-i686-libxml2"
+      configure_params: "--with-win32 --enable-automation"
+      verify_ui: "win32"
+      verify_libxml2: "yes"
+      verify_audio: "directsound"
+      upload_artifacts: true
+      build_setup: true
+      tspico_test: true
+
+  release:
+    name: "GitHub release"
+    needs: [win32]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: fuse-*
+          path: dist
+          merge-multiple: true
+
+      - name: Name the files for the TS-Pico build
+        run: |
+          cd dist
+          ls -la
+          for f in fuse-*; do mv "$f" "${f/fuse-/fuse-tspico-}"; done
+          ls -la
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: fuse-tspico-windows
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Attach to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --title "Fuse with TS-Pico $GITHUB_REF_NAME" \
+              --notes-file TSPICO.md
+          gh release upload "$GITHUB_REF_NAME" dist/* --clobber
