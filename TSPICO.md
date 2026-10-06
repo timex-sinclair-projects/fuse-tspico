@@ -20,14 +20,17 @@ What `tspico-device` adds:
 
 ## Running it
 
-1. Split the TS-Pico ROM (`TSPICO-21.ROM`, in tspico-firmware-build's
-   `src/rom/`) into its two halves:
+1. Split the TS-Pico ROM (in tspico-firmware-build's [`src/rom/`](https://github.com/timex-sinclair-projects/tspico-firmware-build/tree/main/src/rom);
+   `TSPICO-22.ROM` at the time of writing) into its two halves:
 
-       head -c 16384 TSPICO-21.ROM > tspico-home.rom
-       tail -c 16384 TSPICO-21.ROM > tspico-exrom.rom
+       head -c 16384 TSPICO-22.ROM > tspico-home.rom
+       tail -c 16384 TSPICO-22.ROM > tspico-exrom.rom
 
-2. Start `pico_host`: the standalone binary from a tspico-firmware-build
-   release, or `python3 tools/emu/pico_host.py` in a checkout.
+2. Start `pico_host`. `pico_host` comes with each [TS-Pico firmware release](https://github.com/timex-sinclair-projects/tspico-firmware-build/releases/latest):
+   `pico_host-macos-arm64.zip`, `pico_host-windows-x86_64.zip` or
+   `pico_host-linux-x86_64.zip`. Unzip it and run it; it keeps the Pico's flash
+   and SD card in `~/TS-Pico-emulator`. (Or run `python3 tools/emu/pico_host.py`
+   in a checkout of tspico-firmware-build.)
 3. Start Fuse:
 
        fuse --machine ts2068 --rom-ts2068-0 tspico-home.rom \
