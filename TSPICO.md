@@ -21,10 +21,11 @@ What `tspico-device` adds:
 ## Running it
 
 1. Split the TS-Pico ROM (in tspico-firmware-build's [`src/rom/`](https://github.com/timex-sinclair-projects/tspico-firmware-build/tree/main/src/rom);
-   `TSPICO-22.ROM` at the time of writing) into its two halves:
+   `TSPICO-23.ROM`, ROM 2.3, at the time of writing; use it with the `pico_host` from the
+   same release) into its two halves:
 
-       head -c 16384 TSPICO-22.ROM > tspico-home.rom
-       tail -c 16384 TSPICO-22.ROM > tspico-exrom.rom
+       head -c 16384 TSPICO-23.ROM > tspico-home.rom
+       tail -c 16384 TSPICO-23.ROM > tspico-exrom.rom
 
 2. Start `pico_host`. `pico_host` comes with each [TS-Pico firmware release](https://github.com/timex-sinclair-projects/tspico-firmware-build/releases/latest):
    `pico_host-macos-arm64.zip`, `pico_host-windows-x86_64.zip` or
